@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASR Demo</title>
+    <style>
+        body {
+            font-family: monospace;
+            padding: 20px;
+            background: #1e1e1e;
+            color: #d4d4d4;
+        }
+        #events {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .event {
+            margin: 10px 0;
+            padding: 10px;
+            background: #2d2d2d;
+            border-left: 3px solid #4ec9b0;
+        }
+    </style>
+</head>
+<body>
+    <h1>ASR WebSocket Demo</h1>
+    <div id="status">连接中...</div>
+    <div id="events"></div>
+
+    <script>
+        const ws = new WebSocket('ws://127.0.0.1:8888');
+        const statusDiv = document.getElementById('status');
+        const eventsDiv = document.getElementById('events');
+
+        ws.onopen = () => {
+            statusDiv.textContent = '已连接';
+            statusDiv.style.color = '#4ec9b0';
+        };
+
+        ws.onmessage = (event) => {
+            const eventDiv = document.createElement('div');
+            eventDiv.className = 'event';
+            eventDiv.textContent = event.data;
+            eventsDiv.appendChild(eventDiv);
+            window.scrollTo(0, document.body.scrollHeight);
+        };
+
+        ws.onclose = () => {
+            statusDiv.textContent = '连接已关闭';
+            statusDiv.style.color = '#f48771';
+        };
+
+        ws.onerror = () => {
+            statusDiv.textContent = '连接错误';
+            statusDiv.style.color = '#f48771';
+        };
+    </script>
+</body>
+</html>
