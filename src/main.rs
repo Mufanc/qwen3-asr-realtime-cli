@@ -1,9 +1,9 @@
 use anyhow::Result;
 use base64::Engine;
-use clap::Parser;
+use clap::{CommandFactory, Parser};
 use futures_util::{SinkExt, StreamExt};
 use serde_json::json;
-use std::io::{self, Read};
+use std::io::{self, IsTerminal, Read};
 use log::error;
 use tokio::sync::{mpsc, oneshot};
 use tokio_tungstenite::{connect_async, tungstenite::Message};
@@ -53,6 +53,12 @@ struct Args {
 #[tokio::main]
 async fn main() -> Result<()> {
     let args = Args::parse();
+    
+    if io::stdin().is_terminal() {
+        Args::command().print_help()?;
+        std::process::exit(0);
+    }
+    
     let url = format!("{}?model={}", args.base_url, args.model);
 
     let request = tokio_tungstenite::tungstenite::http::Request::builder()
