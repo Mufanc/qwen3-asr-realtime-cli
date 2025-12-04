@@ -29,19 +29,19 @@ The tool expects PCM audio input in s16le format (16-bit signed little-endian), 
 #### macOS (AVFoundation)
 
 ```bash
-ffmpeg -f avfoundation -i ":0" -f s16le -ar 16000 -ac 1 - | asr --api-key YOUR_API_KEY
+ffmpeg -f avfoundation -i ":0" -f s16le -ar 16000 -ac 1 - 2>/dev/null | asr --api-key YOUR_API_KEY
 ```
 
 #### Linux (ALSA)
 
 ```bash
-ffmpeg -f alsa -i default -f s16le -ar 16000 -ac 1 - | asr --api-key YOUR_API_KEY
+ffmpeg -f alsa -i default -f s16le -ar 16000 -ac 1 - 2>/dev/null | asr --api-key YOUR_API_KEY
 ```
 
 #### Windows (DirectShow)
 
 ```bash
-ffmpeg -f dshow -i audio="Microphone" -f s16le -ar 16000 -ac 1 - | asr --api-key YOUR_API_KEY
+ffmpeg -f dshow -i audio="Microphone" -f s16le -ar 16000 -ac 1 - 2>/dev/null | asr --api-key YOUR_API_KEY
 ```
 
 ### Environment Variable

@@ -19,13 +19,13 @@ use uuid::Uuid;
 
 Usage examples (ffmpeg -> stdin):
   macOS (AVFoundation):
-    ffmpeg -f avfoundation -i ":0" -f s16le -ar 16000 -ac 1 - | asr
+    ffmpeg -f avfoundation -i ":0" -f s16le -ar 16000 -ac 1 - 2>/dev/null | asr
 
   Linux (ALSA):
-    ffmpeg -f alsa -i default -f s16le -ar 16000 -ac 1 - | asr
+    ffmpeg -f alsa -i default -f s16le -ar 16000 -ac 1 - 2>/dev/null | asr
 
   Windows (DirectShow):
-    ffmpeg -f dshow -i audio="Microphone" -f s16le -ar 16000 -ac 1 - | asr
+    ffmpeg -f dshow -i audio="Microphone" -f s16le -ar 16000 -ac 1 - 2>/dev/null | asr
 
 Environment:
   - Set DASHSCOPE_API_KEY via env or use --api-key
