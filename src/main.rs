@@ -18,11 +18,14 @@ use uuid::Uuid;
     long_about = r#"Input audio: PCM s16le (16-bit signed little-endian), mono
 
 Usage examples (ffmpeg -> stdin):
-  1) From file:
-     ffmpeg -i input.mp3 -f s16le -ar 16000 -ac 1 - | asr
+  macOS (AVFoundation):
+    ffmpeg -f avfoundation -i ":0" -f s16le -ar 16000 -ac 1 - | asr
 
-  2) macOS microphone (AVFoundation):
-     ffmpeg -f avfoundation -i ":0" -f s16le -ar 16000 -ac 1 - | asr
+  Linux (ALSA):
+    ffmpeg -f alsa -i default -f s16le -ar 16000 -ac 1 - | asr
+
+  Windows (DirectShow):
+    ffmpeg -f dshow -i audio="Microphone" -f s16le -ar 16000 -ac 1 - | asr
 
 Environment:
   - Set DASHSCOPE_API_KEY via env or use --api-key

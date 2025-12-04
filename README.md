@@ -24,16 +24,24 @@ cargo install --path .
 
 The tool expects PCM audio input in s16le format (16-bit signed little-endian), mono channel.
 
-### Basic Usage
+### Microphone Input
 
-```bash
-ffmpeg -i input.mp3 -f s16le -ar 16000 -ac 1 - | asr --api-key YOUR_API_KEY
-```
-
-### Microphone Input (macOS)
+#### macOS (AVFoundation)
 
 ```bash
 ffmpeg -f avfoundation -i ":0" -f s16le -ar 16000 -ac 1 - | asr --api-key YOUR_API_KEY
+```
+
+#### Linux (ALSA)
+
+```bash
+ffmpeg -f alsa -i default -f s16le -ar 16000 -ac 1 - | asr --api-key YOUR_API_KEY
+```
+
+#### Windows (DirectShow)
+
+```bash
+ffmpeg -f dshow -i audio="Microphone" -f s16le -ar 16000 -ac 1 - | asr --api-key YOUR_API_KEY
 ```
 
 ### Environment Variable
@@ -47,15 +55,15 @@ asr < audio.pcm
 
 ## Command-Line Options
 
-| Option | Default | Description |
-|--------|---------|-------------|
-| `--api-key` | - | DashScope API key (required) |
-| `--model`, `-m` | `qwen3-asr-flash-realtime` | ASR model to use |
-| `--base-url` | `wss://dashscope.aliyuncs.com/api-ws/v1/realtime` | WebSocket endpoint |
-| `--sample-rate`, `-s` | `16000` | Audio sample rate in Hz |
-| `--language`, `-l` | `zh` | Recognition language code |
-| `--vad-threshold` | `0.2` | Voice activity detection threshold |
-| `--vad-silence-ms` | `800` | Silence duration in milliseconds for VAD |
+| Option                | Default                                           | Description                              |
+|-----------------------|---------------------------------------------------|------------------------------------------|
+| `--api-key`           | -                                                 | DashScope API key (required)             |
+| `--model`, `-m`       | `qwen3-asr-flash-realtime`                        | ASR model to use                         |
+| `--base-url`          | `wss://dashscope.aliyuncs.com/api-ws/v1/realtime` | WebSocket endpoint                       |
+| `--sample-rate`, `-s` | `16000`                                           | Audio sample rate in Hz                  |
+| `--language`, `-l`    | `zh`                                              | Recognition language code                |
+| `--vad-threshold`     | `0.2`                                             | Voice activity detection threshold       |
+| `--vad-silence-ms`    | `800`                                             | Silence duration in milliseconds for VAD |
 
 ## Output Format
 
