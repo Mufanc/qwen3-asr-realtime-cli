@@ -5,7 +5,7 @@ use futures_util::{SinkExt, StreamExt};
 use serde_json::json;
 use std::io::{self, Read};
 use log::error;
-use tokio::sync::mpsc;
+use tokio::sync::{mpsc, oneshot};
 use tokio_tungstenite::{connect_async, tungstenite::Message};
 use uuid::Uuid;
 
@@ -43,6 +43,8 @@ struct Args {
     vad_threshold: f32,
     #[arg(long, default_value_t = 800)]
     vad_silence_ms: u32,
+    #[arg(short, long)]
+    keep: bool,
 }
 
 #[tokio::main]
@@ -93,7 +95,10 @@ async fn main() -> Result<()> {
         }
     });
 
-    let task_w_audio = tokio::spawn(async move {
+    let (shutdown_tx, shutdown_rx) = oneshot::channel::<()>();
+    let keep = args.keep;
+    
+    let _task_w_audio = tokio::spawn(async move {
         while let Some(audio_data) = audio_rx.recv().await {
             let encoded = base64::engine::general_purpose::STANDARD.encode(&audio_data);
             let audio_event = json!({
@@ -107,8 +112,12 @@ async fn main() -> Result<()> {
                 break;
             }
         }
+        
+        if !keep {
+            let _ = shutdown_tx.send(());
+        }
     });
-
+    
     let task_r_message = tokio::spawn(async move {
         while let Some(msg) = message_rx.next().await {
             match msg {
@@ -127,11 +136,10 @@ async fn main() -> Result<()> {
         }
     });
 
-    // Wait for any task to complete
     tokio::select! {
-        _ = task_w_audio => {},
         _ = task_r_message => {},
-        _ = tokio::signal::ctrl_c() => {}
+        _ = tokio::signal::ctrl_c() => {},
+        _ = shutdown_rx => {}
     }
 
     Ok(())
